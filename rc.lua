@@ -456,7 +456,7 @@ client.add_signal("focus", function(c) c.border_color = beautiful.border_focus e
 client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
-awful.util.spawn_with_shell("gnome-terminal --window-with-profile=syswindow -x watch -n 10 'ping -c 1 google.de'", 1)
+awful.util.spawn_with_shell("gnome-terminal --window-with-profile=syswindow -x alsamixer", 1)
 awful.util.spawn_with_shell("gnome-terminal --window-with-profile=syswindow -x tty-clock -cs", 1)
 awful.util.spawn_with_shell("gnome-terminal --window-with-profile=syswindow -x htop", 1)
 awful.util.spawn("xscreensaver -nosplash")
