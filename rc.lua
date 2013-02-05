@@ -12,6 +12,7 @@ require("vicious")
 function get_playing_song()
     local s = io.popen("quodlibet --print-playing")
     local str = s:read("*all")
+    str = str:gsub("%&", "and")
     return str 
 end
 
@@ -456,7 +457,12 @@ client.add_signal("focus", function(c) c.border_color = beautiful.border_focus e
 client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
 
-awful.util.spawn_with_shell("gnome-terminal --window-with-profile=syswindow -x alsamixer", 1)
-awful.util.spawn_with_shell("gnome-terminal --window-with-profile=syswindow -x tty-clock -cs", 1)
-awful.util.spawn_with_shell("gnome-terminal --window-with-profile=syswindow -x htop", 1)
+awful.util.spawn_with_shell("sleep 5 & \
+if [ ! -f /tmp/dualscreen ]; \
+then \
+    gnome-terminal --window-with-profile=syswindow -x alsamixer & \
+    gnome-terminal --window-with-profile=syswindow -x tty-clock -cs & \
+    gnome-terminal --window-with-profile=syswindow -x htop & \
+fi", 1)
 awful.util.spawn("xscreensaver -nosplash")
+awful.util.spawn_with_shell(". ~/.screenlayout/dualscreen.sh && touch /tmp/dualscreen && . ~/.backgrounds/start_img_changer.sh")

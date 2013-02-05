@@ -8,14 +8,6 @@
 
 -- {{{ Main
 theme = {}
-wp_number = math.random(1, 3)
-if wp_number == 1 then
-        theme.wallpaper_cmd = { "awsetbg /home/max/.config/awesome/background.jpg" }
-elseif wp_number == 2 then
-        theme.wallpaper_cmd = { "awsetbg /home/max/.config/awesome/background2.jpg" }
-else
-        theme.wallpaper_cmd = { "awsetbg /home/max/.config/awesome/background3.jpg" }
-end
 -- }}}
 
 -- {{{ Styles
