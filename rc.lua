@@ -179,6 +179,18 @@ awful.layout.suit.magnifier
 		return args[1]
 	    end)
 
+	    -- BAT widget
+	    batwidget = awful.widget.progressbar()
+	    batwidget:set_width(8)
+	    batwidget:set_height(14)
+	    batwidget:set_vertical(true)
+	    batwidget:set_background_color("#000000")
+	    batwidget:set_border_color(nil)
+	    batwidget:set_color("#00bfff")
+
+	    -- Register BAT widget
+	    vicious.register(batwidget, vicious.widgets.bat, "$2", 120, "BAT1")
+	    
 	    -- Create a systray
 	    mysystray = widget({ type = "systray" })
 
@@ -262,6 +274,8 @@ mylayoutbox[s],
 mytextclock,
 spacer,
 actual_track_widget,
+spacer,
+batwidget.widget,
 spacer,
 memwidget.widget,
 spacer,
@@ -465,4 +479,3 @@ then \
     gnome-terminal --window-with-profile=syswindow -x htop & \
 fi", 1)
 awful.util.spawn("xscreensaver -nosplash")
-awful.util.spawn_with_shell(". ~/.screenlayout/dualscreen.sh && touch /tmp/dualscreen && . ~/.backgrounds/start_img_changer.sh")
