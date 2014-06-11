@@ -1,5 +1,5 @@
 -------------------------------
---  "Zenburn" awesome theme  --
+--  "Zenburn" awesom theme  --
 --    By Adrian C. (anrxc)   --
 -------------------------------
 
@@ -32,6 +32,10 @@ theme.border_marked = "#CC9393"
 -- {{{ Titlebars
 theme.titlebar_bg_focus  = "#3F3F3F"
 theme.titlebar_bg_normal = "#3F3F3F"
+-- }}}
+
+-- {{{ Wallpaper
+theme.wallpaper_cmd = { "awsetbg /home/max/.config/awesome/background3.jpg" }
 -- }}}
 
 -- There are other variable sets
