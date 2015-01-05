@@ -373,6 +373,12 @@ function (c)
 end)
 )
 
+-- Special rules
+
+awful.rules.rules = {
+    { rule = { instance = "plugin-container" }, properties = { floating = true } },
+}
+
 -- Compute the maximum number of digit we need, limited to 9
 keynumber = 0
 for s = 1, screen.count() do
@@ -474,8 +480,9 @@ client.add_signal("unfocus", function(c) c.border_color = beautiful.border_norma
 awful.util.spawn_with_shell("sleep 5 & \
 if [ ! -f /tmp/dualscreen ]; \
 then \
-    gnome-terminal --window-with-profile=syswindow -x alsamixer & \
+    gnome-terminal --window-with-profile=syswindow -x alsamixer -c 0 & \
     gnome-terminal --window-with-profile=syswindow -x tty-clock -cs & \
     gnome-terminal --window-with-profile=syswindow -x htop & \
+    zeal & \
 fi", 1)
 awful.util.spawn("xscreensaver -nosplash")
