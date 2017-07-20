@@ -61,53 +61,69 @@ function displayMonth(month,year,weekStart)
 end
 
 function switchNaughtyMonth(switchMonths)
-        if (#calendar < 3) then return end
-        local swMonths = switchMonths or 1
-        calendar[1] = calendar[1] + swMonths
-        calendar[3].box.widgets[2].text = string.format('<span font_desc="%s">%s</span>', "monospace", displayMonth(calendar[1], calendar[2], 2))
+    if (#calendar < 3) then return end
+    local swMonths = switchMonths or 1
+    calendar[1] = calendar[1] + swMonths
+    naughty.replace_text(
+        calendar[3],
+        nil,
+        string.format(
+            '<span font_desc="%s">%s</span>',
+            "monospace",
+            displayMonth(calendar[1], calendar[2], 2)
+        )
+    )
+end
+
+local function showCalendar(w)
+    local month, year = os.date('%m'), os.date('%Y')
+    calendar = { month, year,
+        naughty.notify({
+            text = string.format('<span font_desc="%s">%s</span>', "monospace", displayMonth(month, year, 2)),
+            timeout = 0,
+            hover_timeout = 0.5,
+            screen = capi.mouse.screen
+        })
+    }
+end
+
+local function destroyCalendar(w)
+    naughty.destroy(calendar[3])
 end
 
 function addCalendarToWidget(mywidget, custom_current_day_format)
-  if custom_current_day_format then current_day_format = custom_current_day_format end
+    if custom_current_day_format then current_day_format = custom_current_day_format end
 
-  mywidget:add_signal('mouse::enter', function ()
-        local month, year = os.date('%m'), os.date('%Y')
-        calendar = { month, year,
-        naughty.notify({
-                text = string.format('<span font_desc="%s">%s</span>', "monospace", displayMonth(month, year, 2)),
-                timeout = 0,
-                hover_timeout = 0.5,
-                screen = capi.mouse.screen
-        })
-  }
-  end)
-  mywidget:add_signal('mouse::leave', function () naughty.destroy(calendar[3]) end)
+    mywidget:connect_signal("mouse::enter", showCalendar)
+    mywidget:connect_signal('mouse::leave', destroyCalendar)
 
-  mywidget:buttons(awful.util.table.join(
-    awful.button({ }, 1, function()
-        switchNaughtyMonth(-1)
-    end),
-    awful.button({ }, 3, function()
-        switchNaughtyMonth(1)
-    end),
-    awful.button({ }, 4, function()
-        switchNaughtyMonth(-1)
-    end),
-    awful.button({ }, 5, function()
-        switchNaughtyMonth(1)
-    end),
-    awful.button({ 'Shift' }, 1, function()
-        switchNaughtyMonth(-12)
-    end),
-    awful.button({ 'Shift' }, 3, function()
-        switchNaughtyMonth(12)
-    end),
-    awful.button({ 'Shift' }, 4, function()
-        switchNaughtyMonth(-12)
-    end),
-    awful.button({ 'Shift' }, 5, function()
-        switchNaughtyMonth(12)
-    end)
-  ))
+    mywidget:buttons(
+        awful.util.table.join(
+            awful.button({ }, 1, function()
+                switchNaughtyMonth(-1)
+            end),
+            awful.button({ }, 3, function()
+                switchNaughtyMonth(1)
+            end),
+            awful.button({ }, 4, function()
+                switchNaughtyMonth(-1)
+            end),
+            awful.button({ }, 5, function()
+                switchNaughtyMonth(1)
+            end),
+            awful.button({ 'Shift' }, 1, function()
+                switchNaughtyMonth(-12)
+            end),
+            awful.button({ 'Shift' }, 3, function()
+                switchNaughtyMonth(12)
+            end),
+            awful.button({ 'Shift' }, 4, function()
+                switchNaughtyMonth(-12)
+            end),
+            awful.button({ 'Shift' }, 5, function()
+                switchNaughtyMonth(12)
+            end)
+        )
+    )
 end
 

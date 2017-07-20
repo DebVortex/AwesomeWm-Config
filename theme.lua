@@ -35,7 +35,7 @@ theme.titlebar_bg_normal = "#3F3F3F"
 -- }}}
 
 -- {{{ Wallpaper
-theme.wallpaper_cmd = { "awsetbg /home/max/.config/awesome/background.jpg" }
+theme.wallpaper_cmd = { "awsetbg /home/max/.config/awesome/img/background.jpg" }
 -- }}}
 
 -- There are other variable sets
