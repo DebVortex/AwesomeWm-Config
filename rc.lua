@@ -45,6 +45,7 @@ beautiful.init("/home/max/.config/awesome/theme/theme.lua")
 terminal = 'mate-terminal'
 editor = os.getenv("EDITOR") or "jed"
 editor_cmd = terminal .. " -e " .. editor
+awful.util.terminal = terminal
 
 -- Default modkey.
 -- Usually, Mod4 is the key with a logo between Control and Alt.
@@ -54,7 +55,8 @@ editor_cmd = terminal .. " -e " .. editor
 modkey = "Mod4"
 
 -- Table of layouts to cover with awful.layout.inc, order matters.
-layouts = {
+awful.util.tagnames = { "sys", "im", "www", "mail", "dev1", "dev2" }
+awful.layout.layouts = {
   awful.layout.suit.floating,
   awful.layout.suit.tile,
   awful.layout.suit.tile.left,
@@ -112,13 +114,6 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 
 -- Keyboard map indicator and switcher
 mykeyboardlayout = awful.widget.keyboardlayout()
-
--- {{{ Wibar
--- Create a textclock widget
-mytextclock = wibox.widget.textclock()
-require('calendar2')
-calendar2.addCalendarToWidget(mytextclock)
-
 
 -- RAM usage widget
 memwidget = wibox.widget.progressbar({
@@ -231,68 +226,71 @@ end
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
-awful.screen.connect_for_each_screen(function(s)
-    -- Wallpaper
-    set_wallpaper(s)
 
-    tags = {
-        names = { "sys", "im", "www", "mail", 5, 6, 7, 8, 9 },
-        layout = {
-            layouts[2], layouts[6], layouts[10], layouts[10],
-            layouts[6], layouts[6], layouts[6], layouts[6], layouts[6]
-        }
-    }
+awful.screen.connect_for_each_screen(function(s) beautiful.at_screen_connect(s) end)
 
-    for s = 1, screen.count() do
-        -- Each screen has its own tag table.
-        tags[s] = awful.tag(tags.names, s, tags.layout)
-    end
-
-    -- Create a promptbox for each screen
-    s.mypromptbox = awful.widget.prompt()
-    -- Create an imagebox widget which will contains an icon indicating which layout we're using.
-    -- We need one layoutbox per screen.
-    s.mylayoutbox = awful.widget.layoutbox(s)
-    s.mylayoutbox:buttons(
-        awful.util.table.join(
-            awful.button({ }, 1, function () awful.layout.inc( 1) end),
-            awful.button({ }, 3, function () awful.layout.inc(-1) end),
-            awful.button({ }, 4, function () awful.layout.inc( 1) end),
-            awful.button({ }, 5, function () awful.layout.inc(-1) end)
-        )
-    )
-    -- Create a taglist widget
-    s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, taglist_buttons)
-
-    -- Create a tasklist widget
-    s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
-
-    -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s })
-
-    -- Add widgets to the wibox
-    s.mywibox:setup {
-        layout = wibox.layout.align.horizontal,
-        { -- Left widgets
-            layout = wibox.layout.fixed.horizontal,
-            mylauncher,
-            s.mytaglist,
-            s.mypromptbox,
-        },
-        s.mytasklist, -- Middle widget
-        { -- Right widgets
-            layout = wibox.layout.fixed.horizontal,
-            mykeyboardlayout,
-            batwidget,
-            cpuwidget,
-            memwidget,
-            wibox.widget.systray(),
-            mytextclock,
-            s.mylayoutbox,
-        },
-    }
-end)
--- }}}
+--awful.screen.connect_for_each_screen(function(s)
+--    -- Wallpaper
+--    set_wallpaper(s)
+--
+--    tags = {
+--        names = { "sys", "im", "www", "mail", 5, 6, 7, 8, 9 },
+--        layout = {
+--            layouts[2], layouts[6], layouts[10], layouts[10],
+--            layouts[6], layouts[6], layouts[6], layouts[6], layouts[6]
+--        }
+--    }
+--
+--    for s = 1, screen.count() do
+--        -- Each screen has its own tag table.
+--        tags[s] = awful.tag(tags.names, s, tags.layout)
+--    end
+--
+--    -- Create a promptbox for each screen
+--    s.mypromptbox = awful.widget.prompt()
+--    -- Create an imagebox widget which will contains an icon indicating which layout we're using.
+--    -- We need one layoutbox per screen.
+--    s.mylayoutbox = awful.widget.layoutbox(s)
+--    s.mylayoutbox:buttons(
+--        awful.util.table.join(
+--            awful.button({ }, 1, function () awful.layout.inc( 1) end),
+--            awful.button({ }, 3, function () awful.layout.inc(-1) end),
+--            awful.button({ }, 4, function () awful.layout.inc( 1) end),
+--            awful.button({ }, 5, function () awful.layout.inc(-1) end)
+--        )
+--    )
+--    -- Create a taglist widget
+--    s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, taglist_buttons)
+--
+--    -- Create a tasklist widget
+--    s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
+--
+--    -- Create the wibox
+--    s.mywibox = awful.wibar({ position = "top", screen = s })
+--
+--    -- Add widgets to the wibox
+--    s.mywibox:setup {
+--        layout = wibox.layout.align.horizontal,
+--        { -- Left widgets
+--            layout = wibox.layout.fixed.horizontal,
+--            mylauncher,
+--            s.mytaglist,
+--            s.mypromptbox,
+--        },
+--        s.mytasklist, -- Middle widget
+--        { -- Right widgets
+--            layout = wibox.layout.fixed.horizontal,
+--            mykeyboardlayout,
+--            batwidget,
+--            cpuwidget,
+--            memwidget,
+--            wibox.widget.systray(),
+--            mytextclock,
+--            s.mylayoutbox,
+--        },
+--    }
+--end)
+---- }}}
 
 -- {{{ Mouse bindings
 root.buttons(awful.util.table.join(
