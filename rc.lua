@@ -12,9 +12,6 @@ local naughty = require("naughty")
 local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 
--- Load Debian menu entries
-require("debian.menu")
-
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
@@ -42,11 +39,11 @@ end
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
-beautiful.init("/home/max/.config/awesome/theme.lua")
+beautiful.init("/home/max/.config/awesome/theme/theme.lua")
 
 -- This is used later as the default terminal and editor to run.
-terminal = "x-terminal-emulator"
-editor = os.getenv("EDITOR") or "editor"
+terminal = 'mate-terminal'
+editor = os.getenv("EDITOR") or "jed"
 editor_cmd = terminal .. " -e " .. editor
 
 -- Default modkey.
@@ -101,8 +98,8 @@ myawesomemenu = {
 mymainmenu = awful.menu(
     {items = {
         { "awesome", myawesomemenu, beautiful.awesome_icon },
-        { "Debian", debian.menu.Debian_menu.Debian },
-        { "open terminal", terminal }
+        { "Terminal", terminal, terminal_icon },
+        { "Lock Screen", "/usr/bin/xscreensaver-command -lock", lock_icon},
     }
 })
 
@@ -238,8 +235,18 @@ awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
     set_wallpaper(s)
 
-    -- Each screen has its own tag table.
-    awful.tag({ "sys", "im", "www", "mail", "5", "6", "7", "8", "9" }, s, awful.layout.layouts[1])
+    tags = {
+        names = { "sys", "im", "www", "mail", 5, 6, 7, 8, 9 },
+        layout = {
+            layouts[2], layouts[6], layouts[10], layouts[10],
+            layouts[6], layouts[6], layouts[6], layouts[6], layouts[6]
+        }
+    }
+
+    for s = 1, screen.count() do
+        -- Each screen has its own tag table.
+        tags[s] = awful.tag(tags.names, s, tags.layout)
+    end
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -276,9 +283,9 @@ awful.screen.connect_for_each_screen(function(s)
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             mykeyboardlayout,
-            batwidget.widget,
-            cpuwidget.widget,
-            memwidget.widget,
+            batwidget,
+            cpuwidget,
+            memwidget,
             wibox.widget.systray(),
             mytextclock,
             s.mylayoutbox,
@@ -305,6 +312,8 @@ globalkeys = awful.util.table.join(
               {description = "view next", group = "tag"}),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore,
               {description = "go back", group = "tag"}),
+    awful.key({ modkey, "Control" }, "l", function () awful.util.spawn("xscreensaver-command -lock") end),
+    awful.key({ modkey, "Control" }, "u", function () awful.util.spawn("/home/max/privat/nippel/search-nippel.sh") end),
 
     awful.key({ modkey,           }, "j",
         function ()
@@ -613,3 +622,9 @@ end)
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
 -- }}}
+
+awful.spawn.with_shell("sleep 5 & \
+mate-terminal --window-with-profile=syswindow -x alsamixer -c 0 & \
+mate-terminal --window-with-profile=syswindow -x tty-clock -cs & \
+mate-terminal --window-with-profile=syswindow -x htop &")
+awful.spawn("xscreensaver -nosplash")
