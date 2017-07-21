@@ -622,7 +622,7 @@ client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_n
 -- }}}
 
 awful.spawn.with_shell("sleep 5 & \
-mate-terminal --window-with-profile=syswindow -x alsamixer -c 0 & \
-mate-terminal --window-with-profile=syswindow -x tty-clock -cs & \
+mate-terminal --window-with-profile=syswindow -x alsamixer -g -c 0 & \
+mate-terminal --window-with-profile=syswindow -x tty-clock -C 6 -cs & \
 mate-terminal --window-with-profile=syswindow -x htop &")
 awful.spawn("xscreensaver -nosplash")
